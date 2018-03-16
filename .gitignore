@@ -7,9 +7,7 @@
 *.stackdump
 *.exe
 
-jv_thread_main
-
-.vscode/
+jv_log_main
 
 bin/
 obj/
