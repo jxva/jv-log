@@ -1,5 +1,7 @@
 #include <jv_log.h>
 
+#define LOG_LINE_SIZE 10240
+
 static const char *prioritys[] = {"emerg", "alert", "crit", "error", "warn", "notice", "info", "debug"};
 
 typedef struct tm jv_tm_t;
@@ -26,12 +28,29 @@ static inline jv_tm_t *jv_localtime(jv_tm_t *tm) {
 static inline void jv_log_write(jv_log_t *log, jv_uint_t priority, const char *fmt, va_list *args) {
   char datetime[20];
   struct tm ptm;
+  jv_int_t n, l;
+  char buf[LOG_LINE_SIZE];
 
   strftime(datetime, sizeof(datetime), "%Y-%m-%d %X", jv_localtime(&ptm));
 
-  fprintf(log->fd, "%s %-8s ", datetime, prioritys[priority]);
-  vfprintf(log->fd, fmt, *args);
-  fprintf(log->fd, "\n");
+  jv_memzero(buf, LOG_LINE_SIZE);
+
+  n = sprintf(buf, "%s %-8s", datetime, prioritys[priority]);
+  l = n;
+
+  n = vsprintf(buf + l, fmt, *args);
+  l += n;
+
+  n = sprintf(buf + l, "\n");
+  l += n;
+
+  fwrite(buf, l, 1, log->fd);
+
+  /*
+    fprintf(log->fd, "%-6lu, %s %-8s ", log->line_count, datetime, prioritys[priority]);
+    vfprintf(log->fd, fmt, *args);
+    fprintf(log->fd, "\n");
+  */
 
   log->line_count++;
 
@@ -49,6 +68,8 @@ jv_log_t *jv_log_create(u_char *filename, jv_uint_t priority, jv_uint_t cache_li
 
   log->fd = filename == NULL ? stdout : fopen((char *) filename, "a+");
   log->priority = priority;
+  log->line_count = 0;
+  log->cache_line = cache_line;
 
   return log;
 }
