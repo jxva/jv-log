@@ -43,7 +43,7 @@
     "editor.formatOnPaste": true,
 
     "files.associations": {
-
+        "jv_log.h": "c"
     },
     "window.title": "${dirty}${activeEditorLong}${separator}${rootName}${separator}${appName}",
     "C_Cpp.intelliSenseEngineFallback": "Enabled",

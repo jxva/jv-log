@@ -1,6 +1,6 @@
 CC=gcc
 
-CFLAGS=-Wall -g -pedantic -pipe -W  -Wpointer-arith -Wno-unused-parameter -Wunused-function -Wunused-variable -Wunused-value -Werror
+CFLAGS=-Wall -g -pedantic -pipe -W -Werror=variadic-macros -Wpointer-arith -Wno-unused-parameter -Wunused-function -Wunused-variable -Wunused-value -Werror
 
 INCLUDES=-I.
 
