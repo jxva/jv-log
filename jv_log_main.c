@@ -1,7 +1,6 @@
 #include <jv_log.h>
 
-
-void test(void) {
+int main(int argc, char *argv[]) {
   jv_log_t *log = jv_log_create(NULL, JV_LOG_DEBUG, 0);
 
   jv_log_debug(log, "Hello, World");
@@ -19,9 +18,6 @@ void test(void) {
   jv_log_info(log, "Hello, %s", "China");
 
   jv_log_destroy(log);
-}
-
-int main(int argc, char *argv[]) {
-  test();
+  
   return 0;
 }

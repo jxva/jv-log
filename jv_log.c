@@ -47,8 +47,6 @@ jv_log_t *jv_log_create(u_char *filename, jv_uint_t priority, jv_uint_t cache_li
     return (jv_log_t *) NULL;
   }
 
-  printf("%lu\n", sizeof(jv_log_t));
-
   log->fd = filename == NULL ? stdout : fopen((char *) filename, "a+");
   log->priority = priority;
 
