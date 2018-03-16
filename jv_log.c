@@ -41,7 +41,7 @@ static inline void jv_log_write(jv_log_t *log, jv_uint_t priority, const char *f
   n = vsprintf(buf + l, fmt, *args);
   l += n;
 
-  n = sprintf(buf + l, "\n");
+  n = snprintf(buf + l, 2, "\n");
   l += n;
 
   fwrite(buf, l, 1, log->fd);
