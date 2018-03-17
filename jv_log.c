@@ -28,7 +28,7 @@ static inline jv_tm_t *jv_localtime(jv_tm_t *tm) {
 static inline void jv_log_write(jv_log_t *log, jv_uint_t priority, const char *fmt, va_list *args) {
   char datetime[20];
   struct tm ptm;
-  jv_int_t n, l;
+  jv_int_t n;
   char buf[LOG_LINE_SIZE];
 
   strftime(datetime, sizeof(datetime), "%Y-%m-%d %X", jv_localtime(&ptm));
@@ -36,15 +36,10 @@ static inline void jv_log_write(jv_log_t *log, jv_uint_t priority, const char *f
   jv_memzero(buf, LOG_LINE_SIZE);
 
   n = sprintf(buf, "%s %-8s", datetime, prioritys[priority]);
-  l = n;
+  n += vsprintf(buf + n, fmt, *args);
+  n += snprintf(buf + n, 2, "\n");
 
-  n = vsprintf(buf + l, fmt, *args);
-  l += n;
-
-  n = snprintf(buf + l, 2, "\n");
-  l += n;
-
-  fwrite(buf, l, 1, log->fd);
+  fwrite(buf, n, 1, log->fd);
 
   /*
     fprintf(log->fd, "%-6lu, %s %-8s ", log->line_count, datetime, prioritys[priority]);
