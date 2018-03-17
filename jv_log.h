@@ -45,6 +45,12 @@ jv_log_t *jv_log_create(u_char *filename, jv_uint_t priority, jv_uint_t cache_li
 
 void jv_log_emerg(jv_log_t *log, const char *fmt, ...);
 
+void jv_log_alert(jv_log_t *log, const char *fmt, ...);
+
+void jv_log_crit(jv_log_t *log, const char *fmt, ...);
+
+void jv_log_error(jv_log_t *log, const char *fmt, ...);
+
 void jv_log_warn(jv_log_t *log, const char *fmt, ...);
 
 void jv_log_notice(jv_log_t *log, const char *fmt, ...);

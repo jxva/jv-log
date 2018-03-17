@@ -89,6 +89,42 @@ void jv_log_emerg(jv_log_t *log, const char *fmt, ...) {
   exit(-1);
 }
 
+void jv_log_alert(jv_log_t *log, const char *fmt, ...) {
+  va_list args;
+
+  if (log->priority < JV_LOG_ALERT) {
+    return;
+  }
+
+  va_start(args, fmt);
+  jv_log_write(log, JV_LOG_ALERT, fmt, &args);
+  va_end(args);
+}
+
+void jv_log_crit(jv_log_t *log, const char *fmt, ...) {
+  va_list args;
+
+  if (log->priority < JV_LOG_CRIT) {
+    return;
+  }
+
+  va_start(args, fmt);
+  jv_log_write(log, JV_LOG_CRIT, fmt, &args);
+  va_end(args);
+}
+
+void jv_log_error(jv_log_t *log, const char *fmt, ...) {
+  va_list args;
+
+  if (log->priority < JV_LOG_ERROR) {
+    return;
+  }
+
+  va_start(args, fmt);
+  jv_log_write(log, JV_LOG_ERROR, fmt, &args);
+  va_end(args);
+}
+
 void jv_log_warn(jv_log_t *log, const char *fmt, ...) {
   va_list args;
 
