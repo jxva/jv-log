@@ -18,6 +18,8 @@ A simple, portable, easy to use log recorder using ANSI C
 int main(int argc, char *argv[]) {
   jv_log_t *log = jv_log_create(NULL, JV_LOG_DEBUG, 0);
 
+  jv_log_stdout("Hello, Stdout");
+
   jv_log_stderr("Hello, Stderr");
 
   jv_log_debug(log, "Hello, Debug");
@@ -59,6 +61,7 @@ int main(int argc, char *argv[]) {
 ## Out Print
 
 ```
+2018-03-18 16:55:30 stdout  Hello, Stdout
 2018-03-18 16:00:18 stderr  Hello, Stderr
 2018-03-18 16:00:18 debug   Hello, Debug
 2018-03-18 16:00:18 debug   Hello, Debug

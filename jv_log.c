@@ -8,6 +8,8 @@ typedef struct tm jv_tm_t;
 
 static inline jv_tm_t *jv_localtime(jv_tm_t *tm);
 
+static inline void jv_log_out(FILE *fd, const char *fmt, va_list *args);
+
 static inline void jv_log_write(jv_log_t *log, jv_uint_t priority, const char *fmt, va_list *args);
 
 static inline jv_tm_t *jv_localtime(jv_tm_t *tm) {
@@ -54,6 +56,24 @@ static inline void jv_log_write(jv_log_t *log, jv_uint_t priority, const char *f
   }
 }
 
+static inline void jv_log_out(FILE *fd, const char *fmt, va_list *args) {
+  char datetime[20];
+  struct tm ptm;
+  jv_int_t n;
+  char buf[JV_LINE_BUFFER_SIZE];
+
+  strftime(datetime, sizeof(datetime), "%Y-%m-%d %X", jv_localtime(&ptm));
+
+  jv_memzero(buf, JV_LINE_BUFFER_SIZE);
+
+  n = sprintf(buf, "%s %-8s", datetime, fd == stdout ? "stdout" : "stderr");
+  n += vsprintf(buf + n, fmt, *args);
+  n += snprintf(buf + n, 2, "\n");
+
+  fprintf(fd, buf);
+  fflush(fd);
+}
+
 jv_log_t *jv_log_create(u_char *filename, jv_uint_t priority, jv_uint_t cache_line) {
   jv_log_t *log = malloc(sizeof(jv_log_t));
 
@@ -69,26 +89,22 @@ jv_log_t *jv_log_create(u_char *filename, jv_uint_t priority, jv_uint_t cache_li
   return log;
 }
 
-void jv_log_stderr(const char *fmt, ...) {
+void jv_log_stdout(const char *fmt, ...) {
+#ifdef DEBUG
   va_list args;
-  char datetime[20];
-  struct tm ptm;
-  jv_int_t n;
-  char buf[JV_LINE_BUFFER_SIZE];
-
-  strftime(datetime, sizeof(datetime), "%Y-%m-%d %X", jv_localtime(&ptm));
-
-  jv_memzero(buf, JV_LINE_BUFFER_SIZE);
 
   va_start(args, fmt);
-
-  n = sprintf(buf, "%s %-8s", datetime, "stderr");
-  n += vsprintf(buf + n, fmt, args);
-  n += snprintf(buf + n, 2, "\n");
-
+  jv_log_out(stdout, fmt, &args);
   va_end(args);
+#endif
+}
 
-  fprintf(stderr, buf);
+void jv_log_stderr(const char *fmt, ...) {
+  va_list args;
+
+  va_start(args, fmt);
+  jv_log_out(stderr, fmt, &args);
+  va_end(args);
 }
 
 void jv_log_emerg(jv_log_t *log, const char *fmt, ...) {
