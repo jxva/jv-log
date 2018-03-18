@@ -1,6 +1,6 @@
 #include <jv_log.h>
 
-#define LOG_LINE_SIZE 10240
+#define JV_LINE_BUFFER_SIZE 10240
 
 static const char *prioritys[] = {"emerg", "alert", "crit", "error", "warn", "notice", "info", "debug"};
 
@@ -29,11 +29,11 @@ static inline void jv_log_write(jv_log_t *log, jv_uint_t priority, const char *f
   char datetime[20];
   struct tm ptm;
   jv_int_t n;
-  char buf[LOG_LINE_SIZE];
+  char buf[JV_LINE_BUFFER_SIZE];
 
   strftime(datetime, sizeof(datetime), "%Y-%m-%d %X", jv_localtime(&ptm));
 
-  jv_memzero(buf, LOG_LINE_SIZE);
+  jv_memzero(buf, JV_LINE_BUFFER_SIZE);
 
   n = sprintf(buf, "%s %-8s", datetime, prioritys[priority]);
   n += vsprintf(buf + n, fmt, *args);
@@ -67,6 +67,28 @@ jv_log_t *jv_log_create(u_char *filename, jv_uint_t priority, jv_uint_t cache_li
   log->cache_line = cache_line;
 
   return log;
+}
+
+void jv_log_stderr(const char *fmt, ...) {
+  va_list args;
+  char datetime[20];
+  struct tm ptm;
+  jv_int_t n;
+  char buf[JV_LINE_BUFFER_SIZE];
+
+  strftime(datetime, sizeof(datetime), "%Y-%m-%d %X", jv_localtime(&ptm));
+
+  jv_memzero(buf, JV_LINE_BUFFER_SIZE);
+
+  va_start(args, fmt);
+
+  n = sprintf(buf, "%s %-8s", datetime, "stderr");
+  n += vsprintf(buf + n, fmt, args);
+  n += snprintf(buf + n, 2, "\n");
+
+  va_end(args);
+
+  fprintf(stderr, buf);
 }
 
 void jv_log_emerg(jv_log_t *log, const char *fmt, ...) {

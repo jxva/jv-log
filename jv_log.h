@@ -7,7 +7,6 @@
 #include <string.h>
 #include <time.h>
 
-
 #define JV_OK 0
 #define JV_ERROR -1
 
@@ -42,6 +41,8 @@ struct jv_log_s {
 };
 
 jv_log_t *jv_log_create(u_char *filename, jv_uint_t priority, jv_uint_t cache_line);
+
+void jv_log_stderr(const char *fmt, ...);
 
 void jv_log_emerg(jv_log_t *log, const char *fmt, ...);
 

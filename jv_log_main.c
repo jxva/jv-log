@@ -3,6 +3,8 @@
 int main(int argc, char *argv[]) {
   jv_log_t *log = jv_log_create(NULL, JV_LOG_DEBUG, 0);
 
+  jv_log_stderr("Hello, Stderr");
+
   jv_log_debug(log, "Hello, Debug");
 
   jv_log_debug(log, "%s, %s", "Hello", "Debug");
