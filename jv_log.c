@@ -69,8 +69,10 @@ static inline void jv_log_out(FILE *fd, const char *fmt, va_list *args) {
   n = sprintf(buf, "%s %-8s", datetime, fd == stdout ? "stdout" : "stderr");
   n += vsprintf(buf + n, fmt, *args);
   n += snprintf(buf + n, 2, "\n");
+ 
+  fwrite(buf, n, 1, fd);
 
-  fprintf(fd, buf);
+  /*fprintf(fd, buf);*/
   fflush(fd);
 }
 
